@@ -1,0 +1,5 @@
+{
+  "name": "Don't Starve Together Boss Tracker",
+  "description": "A web page to track killed bosses in Don't Starve Together with large images and click-to-cross-out functionality.",
+  "requestFramePermissions": []
+}

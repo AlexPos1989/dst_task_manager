@@ -1,22 +1,39 @@
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
-import Database from 'better-sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
+import pg from 'pg';
 
+const { Pool } = pg;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Initialize Database
-const db = new Database('bosses.db');
-db.exec(`
-  CREATE TABLE IF NOT EXISTS killed_bosses (
-    boss_id TEXT PRIMARY KEY
-  )
-`);
+// Initialize PostgreSQL Pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://dst_tracker_user:TEdfecVwrlkFf3eYahFjRSIYzqbfj1es@dpg-d6eqsuhr0fns73cthcq0-a.frankfurt-postgres.render.com/dst_tracker',
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+// Ensure table exists (PostgreSQL syntax)
+async function initDb() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS killed_bosses (
+        boss_id TEXT PRIMARY KEY
+      )
+    `);
+    console.log('Database initialized');
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+  }
+}
 
 async function startServer() {
+  await initDb();
+  
   const app = express();
   const server = http.createServer(app);
   const wss = new WebSocketServer({ server });
@@ -39,10 +56,10 @@ async function startServer() {
   });
 
   // API Routes
-  app.get('/api/bosses', (req, res) => {
+  app.get('/api/bosses', async (req, res) => {
     try {
-      const rows = db.prepare('SELECT boss_id FROM killed_bosses').all() as { boss_id: string }[];
-      const killedBosses = rows.map(row => row.boss_id);
+      const result = await pool.query('SELECT boss_id FROM killed_bosses');
+      const killedBosses = result.rows.map(row => row.boss_id);
       res.json(killedBosses);
     } catch (error) {
       console.error('Error fetching bosses:', error);
@@ -50,21 +67,22 @@ async function startServer() {
     }
   });
 
-  app.post('/api/bosses/toggle', (req, res) => {
+  app.post('/api/bosses/toggle', async (req, res) => {
     const { id } = req.body;
     if (!id) {
       return res.status(400).json({ error: 'Boss ID is required' });
     }
 
     try {
-      const exists = db.prepare('SELECT 1 FROM killed_bosses WHERE boss_id = ?').get(id);
+      const checkResult = await pool.query('SELECT 1 FROM killed_bosses WHERE boss_id = $1', [id]);
+      const exists = checkResult.rowCount && checkResult.rowCount > 0;
       let killed = false;
       
       if (exists) {
-        db.prepare('DELETE FROM killed_bosses WHERE boss_id = ?').run(id);
+        await pool.query('DELETE FROM killed_bosses WHERE boss_id = $1', [id]);
         killed = false;
       } else {
-        db.prepare('INSERT INTO killed_bosses (boss_id) VALUES (?)').run(id);
+        await pool.query('INSERT INTO killed_bosses (boss_id) VALUES ($1)', [id]);
         killed = true;
       }
 
@@ -77,9 +95,9 @@ async function startServer() {
     }
   });
 
-  app.post('/api/bosses/reset', (req, res) => {
+  app.post('/api/bosses/reset', async (req, res) => {
     try {
-      db.prepare('DELETE FROM killed_bosses').run();
+      await pool.query('DELETE FROM killed_bosses');
       const response = { type: 'BOSS_RESET' };
       broadcast(response);
       res.json({ success: true });

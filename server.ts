@@ -3,6 +3,8 @@ import { createServer as createViteServer } from 'vite';
 import Database from 'better-sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import http from 'http';
+import { WebSocketServer, WebSocket } from 'ws';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -16,9 +18,25 @@ db.exec(`
 
 async function startServer() {
   const app = express();
+  const server = http.createServer(app);
+  const wss = new WebSocketServer({ server });
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Helper to broadcast to all clients
+  const broadcast = (data: any) => {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(data));
+      }
+    });
+  };
+
+  wss.on('connection', (ws) => {
+    console.log('Client connected');
+    ws.on('close', () => console.log('Client disconnected'));
+  });
 
   // API Routes
   app.get('/api/bosses', (req, res) => {
@@ -40,14 +58,19 @@ async function startServer() {
 
     try {
       const exists = db.prepare('SELECT 1 FROM killed_bosses WHERE boss_id = ?').get(id);
+      let killed = false;
       
       if (exists) {
         db.prepare('DELETE FROM killed_bosses WHERE boss_id = ?').run(id);
-        res.json({ id, killed: false });
+        killed = false;
       } else {
         db.prepare('INSERT INTO killed_bosses (boss_id) VALUES (?)').run(id);
-        res.json({ id, killed: true });
+        killed = true;
       }
+
+      const response = { id, killed, type: 'BOSS_TOGGLE' };
+      broadcast(response);
+      res.json(response);
     } catch (error) {
       console.error('Error toggling boss:', error);
       res.status(500).json({ error: 'Internal server error' });
@@ -57,6 +80,8 @@ async function startServer() {
   app.post('/api/bosses/reset', (req, res) => {
     try {
       db.prepare('DELETE FROM killed_bosses').run();
+      const response = { type: 'BOSS_RESET' };
+      broadcast(response);
       res.json({ success: true });
     } catch (error) {
       console.error('Error resetting bosses:', error);
@@ -79,7 +104,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });
 }

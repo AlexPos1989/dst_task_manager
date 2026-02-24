@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { BOSSES, Boss, BOSS_GROUPS, BOSS_VISIBILITY, BossGroup } from './constants';
+import { BOSSES, Boss, BOSS_GROUPS, BOSS_VISIBILITY, BossGroup, BOSS_GROUP_ORDER } from './constants';
 import { BossCard } from './components/BossCard';
 import { GuideModal } from './components/GuideModal';
 import { motion, AnimatePresence } from 'motion/react';
@@ -20,6 +20,40 @@ export default function App() {
       .then(res => res.json())
       .then(data => setKilledBosses(new Set(data)))
       .catch(err => console.error('Failed to fetch bosses:', err));
+
+    // WebSocket for real-time updates
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}`;
+    const socket = new WebSocket(wsUrl);
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'BOSS_TOGGLE') {
+          setKilledBosses((prev) => {
+            const newSet = new Set(prev);
+            if (data.killed) {
+              newSet.add(data.id);
+            } else {
+              newSet.delete(data.id);
+            }
+            return newSet;
+          });
+        } else if (data.type === 'BOSS_RESET') {
+          setKilledBosses(new Set());
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket connection closed');
+    };
+
+    return () => {
+      socket.close();
+    };
   }, []);
 
   const toggleBoss = (id: string) => {
@@ -115,9 +149,6 @@ export default function App() {
   const totalVisibleCount = visibleBosses.length;
   const progress = totalVisibleCount > 0 ? Math.round((killedVisibleCount / totalVisibleCount) * 100) : 0;
 
-  // Order groups for display
-  const groupOrder: BossGroup[] = ['surface', 'caves', 'lunar', 'hamlet', 'shipwrecked', 'event'];
-
   return (
     <div className="min-h-screen bg-stone-950 text-stone-200 font-sans selection:bg-amber-900 selection:text-white pb-20">
       <header className="sticky top-0 z-50 bg-stone-900/80 backdrop-blur-md border-b border-stone-800 shadow-lg">
@@ -178,7 +209,7 @@ export default function App() {
         </div>
 
         <div className="space-y-12">
-          {groupOrder.map((groupKey) => {
+          {BOSS_GROUP_ORDER.map((groupKey) => {
             const bossesInGroup = groupedBosses[groupKey];
             if (!bossesInGroup || bossesInGroup.length === 0) return null;
 

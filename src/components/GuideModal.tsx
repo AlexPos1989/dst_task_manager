@@ -64,6 +64,22 @@ export const GuideModal: React.FC<GuideModalProps> = ({ boss, onClose }) => {
                   </div>
                 </div>
 
+                {boss.loot && boss.loot.length > 0 && (
+                  <div className="flex items-start gap-3">
+                    <BookOpen className="text-amber-600 shrink-0 mt-1" size={20} />
+                    <div>
+                      <h3 className="text-sm font-bold text-stone-400 uppercase tracking-wider mb-1">
+                        Награда
+                      </h3>
+                      <ul className="list-disc list-inside text-stone-200 space-y-1 text-base">
+                        {boss.loot.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
                 <div className="pt-4 mt-4 border-t border-stone-800">
                   <a 
                     href={boss.wikiUrl} 

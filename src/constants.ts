@@ -347,7 +347,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Quacken',
     description: 'Морской босс из Shipwrecked. Призывается тралением.',
     guide: 'В DLC Shipwrecked используйте Траловую сеть (Trawl Net) в глубоком океане. С шансом 5% (или выше в определенных местах) сеть выловит Кракена.',
-    loot: ['Железный ключ', 'Мешок с трофеями', 'Сундук глубин'],
+    loot: ['Железный ключ (Iron Key, только 1 раз за мир пока Woodlegs не разблокирован)', 'Мешок с трофеями (Booty Bag)', 'Сундук глубин (Chest of the Depths)'],
     group: 'shipwrecked',
   },
   {
@@ -357,7 +357,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Queen_Womant',
     description: 'Босс из дополнения Hamlet. Обитает в Муравейнике.',
     guide: 'В DLC Hamlet найдите вход в Муравейник (Mant Hill). Пройдите вглубь до тронного зала Королевы.',
-    loot: ['1-3 Мяса', '1-3 Монстромяса', '1-3 Паутины'],
+    loot: ['Королевская корона (Royal Crown)', 'Чертёж Упаковочной обёртки (Bundling Wrap)', '5 Монстромяса', '5 Паутины (Silk)', '4 Хитина (Chitin)'],
     group: 'hamlet',
   },
   {
@@ -367,7 +367,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Reanimated_Skeleton',
     description: 'Призывается ночью с помощью Теневого Атриума на собранном скелете.',
     guide: 'Соберите скелет из 8 окаменелостей (Fossils). Вставьте в него Теневое Сердце (Shadow Atrium), которое падает с Теневых Фигур 3-го уровня.',
-    loot: ['8 Окаменелостей', 'Теневой атриум'],
+    loot: ['8 Окаменелостей (Fossil Fragments)', 'Теневой атриум (Shadow Atrium)', '2-4 Топлива ужаса (Nightmare Fuel)'],
     group: 'caves',
   },
   {
@@ -377,7 +377,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Scrappy_Werepig',
     description: 'Вторая версия свина оборотня, которая появляется после победы над первым.',
     guide: 'Чтобы призвать его, нужно сначала победить Кошмарного Свинооборотня. После этого на поверхности на мусорной свалке появится Металлический свин.',
-    loot: ['Обрезок (Scrap)', 'Обрезной наплечник (если надет перед смертью)'],
+    loot: ['Обрезки (Scrap)', 'Авторемонтник (Auto-Mat-O-Chanic)', 'Чертёж W.A.R.B.I.S. Шлема или W.A.R.B.I.S. Брони (гарантированно 1 из 2)'],
     group: 'caves',
   },
   {
@@ -387,7 +387,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Sealnado',
     description: 'Босс сезона ураганов в Shipwrecked. Торнадо с тюленем.',
     guide: 'В DLC Shipwrecked появляется в сезон Ураганов (Hurricane Season). Плавает по морю и засасывает игрока.',
-    loot: ['3 Мяса', '2-3 Пуховых перьев', 'Лопасти турбины'],
+    loot: ['Лопасти турбины (Turbine Blades, из торнадо формы)', '4 Мяса + Волшебная печать (Magic Seal, при убийстве тюленя)', 'Только Волшебная печать (Magic Seal, если пощадить тюленя — мяса нет)'],
     group: 'shipwrecked',
   },
   {
@@ -397,7 +397,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Shadow_Pieces',
     description: 'Призываются в новолуние с помощью мраморных статуй.',
     guide: 'Найдите мраморные статуи Коня, Слона и Ладьи. Принесите к ним соответствующие "Подозрительные мраморные части" (тяжелые, носятся на спине). Почините статуи. В Новолуние (New Moon) разбейте статуи киркой, чтобы освободить Теневые Фигуры.',
-    loot: ['1-3 Топлива ужаса', '1-3 Шестеренки', 'Теневой атриум (на уровне 3)'],
+    loot: ['1-6 Топлива ужаса (Nightmare Fuel, зависит от уровня)', 'Тёмный меч (Dark Sword, уровень 3)', 'Ночная броня (Night Armor, уровень 3)', 'Теневой атриум (Shadow Atrium, только с фигуры уровня 3)'],
     group: 'surface',
   },
   {
@@ -417,7 +417,7 @@ export const BOSSES: Boss[] = [
     wikiUrl: 'https://dontstarve.fandom.com/wiki/Tiger_Shark',
     description: 'Босс из Shipwrecked. Обитает возле своего логова.',
     guide: 'В DLC Shipwrecked найдите логово Тигровой Акулы (большой песчаный холм на острове). Акула появляется, если игрок находится рядом с логовом или атакует акулят.',
-    loot: ['2-4 Сырой рыбы', '1-2 Глаза тигровой акулы', '2-4 Акульих жабр'],
+    loot: ['8 Сырой рыбы (Raw Fish)', '1 Глаз тигровой акулы (Eye of the Tiger Shark)', '2-4 Акульих жабр (Shark Gills)'],
     group: 'shipwrecked',
   },
   {

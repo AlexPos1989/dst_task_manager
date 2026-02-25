@@ -111,6 +111,16 @@ export const BOSSES: Boss[] = [
     group: 'surface',
   },
   {
+    id: 'birchnut-treeguard',
+    name: 'Лиственный энт',
+    imageUrl: 'https://static.wikia.nocookie.net/dont-starve/images/f/f1/%D0%9B%D0%B8%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D1%8D%D0%BD%D1%82.png/revision/latest?cb=20220216164807&path-prefix=ru',
+    wikiUrl: 'https://dont-starve.fandom.com/ru/wiki/%D0%9B%D0%B8%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D1%8B%D0%B9_%D1%8D%D0%BD%D1%82',
+    description: 'Ядовитая каштановая берёза. Появляется при рубке каштановых берез.',
+    guide: 'Появляется при рубке каштановых берез (преимущественно осенью). В отличие от обычного энта, он не передвигается, а атакует корнями и призывает маленьких приспешников (Лиственных энтиков). Чтобы победить, нужно рубить ствол топором, уклоняясь от корней. Также можно выкопать его лопатой (требуется много ударов) или сжечь (лут сгорит).',
+    loot: ['1 Живое бревно (гарантированно)', '1 Топливо ужаса (20% шанс)', '1 Живое бревно (при выкапывании пня)', ' 3 Каштана'],
+    group: 'miniboss',
+  },
+  {
     id: 'celestial-champion',
     name: 'Небесный Чемпион',
     imageUrl: 'https://static.wikia.nocookie.net/dont-starve-game/images/2/2c/Celestial_Champion_Phase_1.png',

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Boss, CROSS_OUT_ANIMATION_DURATION } from '../constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { Info, BookOpen } from 'lucide-react';
+import { playSlashSound } from '../utils/sound';
 
 interface BossCardProps {
   boss: Boss;
@@ -34,12 +35,6 @@ export const BossCard: React.FC<BossCardProps> = ({ boss, isKilled, onToggle, on
   const handleContextMenu = (e: React.MouseEvent) => {
     e.preventDefault();
     onShowGuide(boss);
-  };
-
-  const playSlashSound = () => {
-    const audio = new Audio('/slash.mp3');
-    audio.volume = 1.0;
-    audio.play().catch(e => console.warn("Audio play failed", e));
   };
 
   return (

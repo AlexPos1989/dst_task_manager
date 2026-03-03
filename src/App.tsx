@@ -12,11 +12,16 @@ import { Trash2, RotateCcw, CheckCircle2 } from 'lucide-react';
 
 export default function App() {
   const [killedBosses, setKilledBosses] = useState<Set<string>>(new Set());
-
   const [selectedGuideBoss, setSelectedGuideBoss] = useState<Boss | null>(null);
 
+  // Get session_id from URL query parameters
+  const sessionId = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('session_id') || 'default';
+  }, []);
+
   useEffect(() => {
-    fetch('/api/bosses')
+    fetch(`/api/bosses?session_id=${sessionId}`)
       .then(res => res.json())
       .then(data => setKilledBosses(new Set(data)))
       .catch(err => console.error('Failed to fetch bosses:', err));
@@ -29,6 +34,12 @@ export default function App() {
     socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        
+        // Only process updates for the current session
+        if (data.session_id && data.session_id !== sessionId) {
+          return;
+        }
+
         if (data.type === 'BOSS_TOGGLE') {
           setKilledBosses((prev) => {
             const newSet = new Set(prev);
@@ -54,7 +65,7 @@ export default function App() {
     return () => {
       socket.close();
     };
-  }, []);
+  }, [sessionId]);
 
   const toggleBoss = (id: string) => {
     // Optimistic update
@@ -71,7 +82,7 @@ export default function App() {
     fetch('/api/bosses/toggle', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id, session_id: sessionId }),
     })
     .then(res => res.json())
     .then(data => {
@@ -112,11 +123,15 @@ export default function App() {
       setKilledBosses(new Set());
       setIsResetting(false);
 
-      fetch('/api/bosses/reset', { method: 'POST' })
+      fetch('/api/bosses/reset', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: sessionId })
+      })
         .catch(err => {
           console.error('Failed to reset bosses:', err);
           // Re-fetch on error to restore state
-          fetch('/api/bosses')
+          fetch(`/api/bosses?session_id=${sessionId}`)
             .then(res => res.json())
             .then(data => setKilledBosses(new Set(data)));
         });

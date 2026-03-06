@@ -451,6 +451,16 @@ export const BOSSES: Boss[] = [
     group: 'miniboss',
   },
   {
+    id: 'varg',
+    name: 'Варг',
+    imageUrl: 'https://static.wikia.nocookie.net/dont-starve-game/images/b/b9/Varg.png/revision/latest?cb=20231110074150',
+    wikiUrl: 'https://dontstarve.fandom.com/wiki/Varg',
+    description: 'Агрессивный моб из DLC Reign of Giants. Появляется при выслеживании подозрительных куч грязи.',
+    guide: 'Во время выслеживания кучек грязи появятся необычные следы, похожие на след хищника, а персонаж начнёт издавать реплики, предупреждающие об опасности.',
+    loot: ['4-6 Мяса монстра', '1-3 Клыка гончей'],
+    group: 'miniboss',
+  },
+  {
     id: 'rabbit-king',
     name: 'Кроль-король',
     imageUrl: 'https://static.wikia.nocookie.net/dont-starve-game/images/2/2c/Wrathful_Rabbit_King.png/revision/latest?cb=20240920200852',
